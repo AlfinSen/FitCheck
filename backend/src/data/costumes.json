@@ -1,0 +1,22 @@
+[
+    {
+        "id": 1,
+        "name": "Red T-Shirt",
+        "image": "public/costumes/c1.png"
+    },
+    {
+        "id": 2,
+        "name": "Blue Hoodie",
+        "image": "public/costumes/c2.png"
+    },
+    {
+        "id": 3,
+        "name": "Black Jacket",
+        "image": "public/costumes/c3.png"
+    },
+    {
+        "id": 4,
+        "name": "White Dress",
+        "image": "public/costumes/c4.png"
+    }
+]
