@@ -32,6 +32,7 @@ build
 backend/uploads/*
 !backend/uploads/.gitkeep
 backend/public/costumes/temp_*
+backend/temp_vton/*
 
 # Agent Artifacts
 .gemini
