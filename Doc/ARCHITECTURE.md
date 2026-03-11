@@ -25,23 +25,19 @@ The frontend is a Single Page Application (SPA) built with React and Vite.
 
 ## Backend Architecture (`/backend`)
 
-The backend is a RESTful API built with Express.js.
+The backend is a RESTful API built with Python and Flask.
 
 ### Core Modules
--   **`server.js`**: Application entry point.
--   **`app.js`**: Express app configuration (CORS, Middleware, Static files).
--   **`routes/tryon.js`**: Defines the `/api/tryon` endpoint.
--   **`controllers/tryonController.js`**: Contains the business logic:
-    1.  Receives user image and costume ID.
-    2.  Calls `nanoApiClient` to analyze the user image.
-    3.  Calculates optimal placement coordinates.
-    4.  Uses `sharp` to composite the costume onto the user image.
-    5.  Returns the processed image as Base64.
+-   **`vton_server.py`**: The unified Python backend. It handles:
+    1.  Static file serving (costume images).
+    2.  Metadata API (`/api/costumes`).
+    3.  ML Inference API (`/api/tryon`).
+-   **`costumes.json`**: Costume metadata storage.
 
-### AI Integration (`utils/nanoApiClient.js`)
--   Interacts with **Google Gemini 2.0 Flash**.
--   Sends the user's image to the model with a prompt to detect the "torso" area (top, left, width, height).
--   This coordinate data is used to scale and position the virtual clothing accurately.
+### AI Integration (`vton_server.py`)
+-   Interacts with **yisol/IDM-VTON** via Gradio.
+-   Automatically resizes images for optimal model performance (max 1024px).
+-   Processes the try-on and returns the generated image as Base64.
 
 ### Data Storage
 -   **`data/costumes.json`**: Metadata for available costumes.
@@ -50,11 +46,10 @@ The backend is a RESTful API built with Express.js.
 
 ## Data Flow
 
-1.  **User Upload**: User uploads a photo on `TryOnPage`.
-2.  **Request**: Frontend sends `POST /api/tryon` with the image and selected costume ID.
-3.  **AI Analysis**: Backend sends the image to Gemini API to find the torso.
-4.  **Processing**:
-    -   Backend calculates the scale and position for the costume based on Gemini's response.
-    -   `sharp` resizes the costume PNG and overlays it on the user's photo.
-5.  **Response**: Backend returns the final image.
-6.  **Display**: Frontend renders the returned Base64 image.
+1.  **User Upload**: User uploads a photo and selects a garment on `TryOnPage`.
+2.  **Request**: Frontend sends `POST /api/tryon` directly to the Python server (Port 5001).
+3.  **Inference**: 
+    -   Python server resizes images.
+    -   Calls `IDM-VTON` model to generate the try-on result.
+4.  **Response**: Final image is sent back as Base64.
+5.  **Display**: Frontend renders the result.

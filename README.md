@@ -4,26 +4,26 @@ FitCheck is a modern, AI-powered virtual try-on application that allows users to
 
 ## Features
 
--   **AI Virtual Try-On**: Upload a photo and instantly see how selected outfits look on you.
--   **Smart Body Detection**: Uses Google Gemini 2.0 Flash to intelligently detect torso coordinates for accurate clothing placement.
--   **Premium UI/UX**: Minimalist, responsive design inspired by Apple's product pages, featuring glassmorphism, smooth GSAP animations, and high-quality imagery.
--   **Dynamic Hero Section**: Auto-playing carousel showcasing the latest fashion trends.
--   **Real-time Processing**: Fast image compositing using Sharp and optimized backend logic.
+-   **AI Virtual Try-On**: High-fidelity virtual try-on using the **IDM-VTON** model.
+-   **Dual-Backend Architecture**: Optimized for performance with a Node.js gateway and a Python inference server.
+-   **Image Processing**: Automatic resizing and optimization for ML inference.
+-   **Premium UI/UX**: Minimalist, responsive design inspired by Apple's product pages.
 
 ## Tech Stack
 
 ### Frontend
--   **React**: UI library (Vite).
--   **Tailwind CSS**: Utility-first styling.
--   **GSAP**: Advanced animations (ScrollTrigger, Timelines).
--   **Lucide React**: Iconography.
--   **React Router**: Client-side routing.
+-   **React**: UI library.
+-   **Tailwind CSS**: Styling.
+-   **GSAP**: Animations.
 
-### Backend
--   **Node.js & Express**: Server runtime and API framework.
--   **Sharp**: High-performance image processing.
--   **Google Gemini API**: AI vision for body analysis.
--   **Multer**: File upload handling.
+### Backend (The Gateway)
+-   **Node.js & Express**: Handles API requests and file uploads.
+-   **Axios**: Forwards requests to the inference server.
+
+### Inference (The Brain)
+-   **Python & Flask**: Dedicated server for AI processing.
+-   **Gradio Client**: Interfaces with the **yisol/IDM-VTON** model on Hugging Face.
+-   **Pillow**: Image resizing and pre-processing.
 
 ## Getting Started
 

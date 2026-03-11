@@ -1,0 +1,7 @@
+flask
+flask-cors
+gradio_client
+Pillow
+axios
+python-dotenv
+
