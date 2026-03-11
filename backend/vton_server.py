@@ -192,12 +192,6 @@ def handle_tryon():
         with open(output_path, "rb") as image_file:
             encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
 
-        # Cleanup
-        try:
-            os.remove(person_path)
-            os.remove(garment_path)
-        except: pass
-
         return jsonify({"resultImage": encoded_string})
 
     except Exception as e:
@@ -205,6 +199,15 @@ def handle_tryon():
         import traceback
         traceback.print_exc()
         return jsonify({"error": str(e)}), 500
+
+    finally:
+        # Cleanup temporary files regardless of success or failure
+        if 'person_path' in locals() and os.path.exists(person_path):
+            try: os.remove(person_path)
+            except: pass
+        if 'garment_path' in locals() and os.path.exists(garment_path):
+            try: os.remove(garment_path)
+            except: pass
 
 if __name__ == '__main__':
     print(f"Starting Python Unified Backend on port {PYTHON_PORT}...")
