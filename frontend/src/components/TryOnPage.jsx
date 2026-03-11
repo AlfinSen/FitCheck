@@ -5,10 +5,10 @@ import { Button } from './ui/Button'
 import { cn } from '../lib/utils'
 
 const COSTUMES = [
-    { id: 1, name: "Red T-Shirt", image: "http://localhost:5001/costumes/c1.png?v=2", color: "bg-red-500" },
-    { id: 2, name: "Blue Hoodie", image: "http://localhost:5001/costumes/c2.png?v=2", color: "bg-blue-500" },
-    { id: 3, name: "Black Jacket", image: "http://localhost:5001/costumes/c3.png?v=2", color: "bg-gray-900" },
-    { id: 4, name: "White Dress", image: "http://localhost:5001/costumes/c4.png?v=2", color: "bg-gray-100" },
+    { id: 1, name: "Red T-Shirt", image: "/costumes/c1.png?v=4", color: "bg-red-500" },
+    { id: 2, name: "Blue Hoodie", image: "/costumes/c2.png?v=4", color: "bg-blue-500" },
+    { id: 3, name: "Black Jacket", image: "/costumes/c3.png?v=4", color: "bg-gray-900" },
+    { id: 4, name: "White Dress", image: "/costumes/c4.png?v=4", color: "bg-gray-100" },
 ]
 
 const TryOnPage = () => {

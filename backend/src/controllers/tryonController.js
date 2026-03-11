@@ -46,14 +46,47 @@ async function tryOn(req, res) {
             const targetLeft = Math.round(processWidth * (position.left / 100));
             const targetTop = Math.round(processHeight * (position.top / 100));
 
-            // 4. Resize costume to fit the target area
-            const resizedCostume = await sharp(costumePath)
+            // 4. Resize and Process costume
+            // Resize to fit width
+            let costumeBuffer = await sharp(costumePath)
                 .resize(targetWidth)
                 .toBuffer();
 
+            // Simple white background removal (thresholding)
+            // This assumes the costume has a white background
+            const costumeImage = sharp(costumeBuffer);
+            const { data, info } = await costumeImage
+                .ensureAlpha()
+                .raw()
+                .toBuffer({ resolveWithObject: true });
+
+            // Iterate through pixels and make white ones transparent
+            for (let i = 0; i < data.length; i += 4) {
+                const r = data[i];
+                const g = data[i + 1];
+                const b = data[i + 2];
+                // Threshold for "white"
+                // Lowered to 200 to catch shadows/off-white
+                if (r > 200 && g > 200 && b > 200) {
+                    data[i + 3] = 0; // Set alpha to 0
+                }
+            }
+
+            // Debug: Check center pixel
+            const centerIdx = (Math.floor(info.height / 2) * info.width + Math.floor(info.width / 2)) * 4;
+            console.log(`Debug Pixel [Center]: R=${data[centerIdx]} G=${data[centerIdx + 1]} B=${data[centerIdx + 2]} A=${data[centerIdx + 3]}`);
+
+            const processedCostume = await sharp(data, {
+                raw: {
+                    width: info.width,
+                    height: info.height,
+                    channels: 4
+                }
+            }).toBuffer();
+
             // 5. Composite
             resultBuffer = await sharp(resizedUserBuffer)
-                .composite([{ input: resizedCostume, top: targetTop, left: targetLeft }])
+                .composite([{ input: processedCostume, top: targetTop, left: targetLeft }])
                 .toBuffer();
 
             console.log("Generated smart composite image");

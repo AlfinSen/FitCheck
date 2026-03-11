@@ -33,7 +33,7 @@ const Navbar = () => {
     const appNavItems = [
         { name: 'Home', path: '/' },
         { name: 'Try-On Studio', path: '/tryon' },
-        { name: 'Collections', path: '#' },
+        { name: 'Collections', path: '/collections' },
     ]
 
     return (

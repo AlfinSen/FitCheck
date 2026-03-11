@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import TryOnPage from './components/TryOnPage'
+import Collections from './components/Collections'
 
 const App = () => {
   return (
@@ -13,6 +14,7 @@ const App = () => {
           <Routes>
             <Route path="/" element={<Hero />} />
             <Route path="/tryon" element={<TryOnPage />} />
+            <Route path="/collections" element={<Collections />} />
           </Routes>
         </main>
       </div>

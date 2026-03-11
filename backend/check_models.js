@@ -2,23 +2,32 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 require('dotenv').config();
 
 async function listModels() {
+    console.log("Checking Gemini Models with API Key...");
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    try {
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-        // There isn't a direct listModels on the instance in some versions, 
-        // but let's try a simple generation to see if the model name works.
-        const result = await model.generateContent("Test");
-        console.log("Model gemini-1.5-flash works!");
-        console.log(result.response.text());
-    } catch (error) {
-        console.error("Error with gemini-1.5-flash:", error.message);
 
+    const modelsToTest = [
+        "gemini-1.5-flash",
+        "gemini-1.5-flash-001",
+        "gemini-1.5-flash-latest",
+        "gemini-2.0-flash",
+        "gemini-pro",
+        "gemini-1.0-pro"
+    ];
+
+    for (const modelName of modelsToTest) {
+        console.log(`\nTesting model: ${modelName}`);
         try {
-            const model2 = genAI.getGenerativeModel({ model: "gemini-pro" });
-            const result2 = await model2.generateContent("Test");
-            console.log("Model gemini-pro works!");
-        } catch (err2) {
-            console.error("Error with gemini-pro:", err2.message);
+            const model = genAI.getGenerativeModel({ model: modelName });
+            const result = await model.generateContent("Hello, are you there?");
+            console.log(`✅ SUCCESS: ${modelName} works!`);
+            console.log("Response:", result.response.text().slice(0, 50) + "...");
+        } catch (error) {
+            console.log(`❌ FAILED: ${modelName}`);
+            if (error.message.includes("404")) {
+                console.log("Reason: 404 Not Found (Invalid model name or not supported in this API version)");
+            } else {
+                console.log("Reason:", error.message.split('\n')[0]);
+            }
         }
     }
 }
