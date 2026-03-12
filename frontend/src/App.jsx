@@ -4,6 +4,7 @@ import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import TryOnPage from './components/TryOnPage'
 import Collections from './components/Collections'
+import RecentTryOns from './components/RecentTryOns'
 
 const App = () => {
   return (
@@ -15,6 +16,7 @@ const App = () => {
             <Route path="/" element={<Hero />} />
             <Route path="/tryon" element={<TryOnPage />} />
             <Route path="/collections" element={<Collections />} />
+            <Route path="/recent" element={<RecentTryOns />} />
           </Routes>
         </main>
       </div>

@@ -1,12 +1,15 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { useDropzone } from 'react-dropzone'
-import { Upload, Sparkles, Loader2, X, Shirt, RefreshCw } from 'lucide-react'
+import { Upload, Sparkles, Loader2, X, Shirt, RefreshCw, Download } from 'lucide-react'
 import { Button } from './ui/Button'
 import { cn } from '../lib/utils'
 
 const API_BASE = "http://localhost:5001";
 
 const TryOnPage = () => {
+    const [searchParams] = useSearchParams()
+    
     // User Photo State
     const [personFile, setPersonFile] = useState(null)
     const [personPreview, setPersonPreview] = useState(null)
@@ -14,12 +17,35 @@ const TryOnPage = () => {
     // Garment Photo State
     const [garmentFile, setGarmentFile] = useState(null)
     const [garmentPreview, setGarmentPreview] = useState(null)
+    const [garmentName, setGarmentName] = useState(null)
     
     const [loading, setLoading] = useState(false)
     const [result, setResult] = useState(null)
     const [isServerReady, setIsServerReady] = useState(false)
 
-    React.useEffect(() => {
+    // Load garment from URL params (when coming from Collections)
+    useEffect(() => {
+        const garmentUrl = searchParams.get('garment')
+        const name = searchParams.get('name')
+        
+        if (garmentUrl) {
+            setGarmentPreview(garmentUrl)
+            setGarmentName(name || 'Selected Garment')
+            
+            // Convert URL to File for form submission
+            fetch(garmentUrl)
+                .then(res => res.blob())
+                .then(blob => {
+                    const file = new File([blob], `${name || 'garment'}.png`, { type: blob.type || 'image/png' })
+                    setGarmentFile(file)
+                })
+                .catch(err => {
+                    console.error('Error loading garment from URL:', err)
+                })
+        }
+    }, [searchParams])
+
+    useEffect(() => {
         const checkHealth = async () => {
             try {
                 const res = await fetch(`${API_BASE}/api/health`)
@@ -54,6 +80,7 @@ const TryOnPage = () => {
         const file = acceptedFiles[0]
         setGarmentFile(file)
         setGarmentPreview(URL.createObjectURL(file))
+        setGarmentName(file.name.replace(/\.[^/.]+$/, ""))
         setResult(null)
     }, [])
 
@@ -91,7 +118,22 @@ const TryOnPage = () => {
                 // Detect mime type or default to png
                 const mimeType = data.resultImage.startsWith('/9j/') ? 'jpeg' : 'png';
                 console.log(`Received result image, length: ${data.resultImage.length}`);
-                setResult(`data:image/${mimeType};base64,${data.resultImage}`)
+                const resultDataUrl = `data:image/${mimeType};base64,${data.resultImage}`
+                setResult(resultDataUrl)
+                
+                // Save to recent try-ons in localStorage
+                const recentTryOns = JSON.parse(localStorage.getItem('fitcheck-recent-tryons') || '[]')
+                const newTryOn = {
+                    id: `tryon-${Date.now()}`,
+                    personImage: personPreview,
+                    garmentImage: garmentPreview,
+                    resultImage: resultDataUrl,
+                    garmentName: garmentName || 'Custom Garment',
+                    createdAt: new Date().toISOString()
+                }
+                // Keep only last 12 try-ons
+                const updated = [newTryOn, ...recentTryOns].slice(0, 12)
+                localStorage.setItem('fitcheck-recent-tryons', JSON.stringify(updated))
             } else {
                 throw new Error('No result image returned from server');
             }
@@ -101,6 +143,16 @@ const TryOnPage = () => {
         } finally {
             setLoading(false)
         }
+    }
+
+    const handleDownload = () => {
+        if (!result) return
+        const link = document.createElement('a')
+        link.href = result
+        link.download = `fitcheck-tryon-${Date.now()}.png`
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
     }
 
     return (
@@ -176,7 +228,12 @@ const TryOnPage = () => {
 
                     {/* Middle: Garment Upload */}
                     <div className="flex flex-col space-y-4">
-                        <h2 className="text-[19px] font-semibold text-[#1d1d1f] px-2">2. Clothing Image</h2>
+                        <div className="flex items-center justify-between px-2">
+                            <h2 className="text-[19px] font-semibold text-[#1d1d1f]">2. Clothing Image</h2>
+                            {garmentName && (
+                                <span className="text-[13px] text-[#0071e3] font-medium">{garmentName}</span>
+                            )}
+                        </div>
                         <div
                             {...getGarmentRootProps()}
                             className={cn(
@@ -199,7 +256,7 @@ const TryOnPage = () => {
                             )}
                             {garmentPreview && !loading && !result && (
                                 <button
-                                    onClick={(e) => { e.stopPropagation(); setGarmentFile(null); setGarmentPreview(null); }}
+                                    onClick={(e) => { e.stopPropagation(); setGarmentFile(null); setGarmentPreview(null); setGarmentName(null); }}
                                     className="absolute top-3 right-3 p-1.5 bg-black/40 hover:bg-black/60 backdrop-blur-md rounded-full text-white transition-colors"
                                 >
                                     <X className="w-4 h-4" />
@@ -236,12 +293,22 @@ const TryOnPage = () => {
                             )}
                             
                             {result && (
-                                <button
-                                    onClick={() => setResult(null)}
-                                    className="absolute top-3 right-3 p-1.5 bg-black/40 hover:bg-black/60 backdrop-blur-md rounded-full text-white transition-colors"
-                                >
-                                    <RefreshCw className="w-4 h-4" />
-                                </button>
+                                <div className="absolute top-3 right-3 flex space-x-2">
+                                    <button
+                                        onClick={handleDownload}
+                                        className="p-1.5 bg-black/40 hover:bg-black/60 backdrop-blur-md rounded-full text-white transition-colors"
+                                        title="Download"
+                                    >
+                                        <Download className="w-4 h-4" />
+                                    </button>
+                                    <button
+                                        onClick={() => setResult(null)}
+                                        className="p-1.5 bg-black/40 hover:bg-black/60 backdrop-blur-md rounded-full text-white transition-colors"
+                                        title="Reset"
+                                    >
+                                        <RefreshCw className="w-4 h-4" />
+                                    </button>
+                                </div>
                             )}
                         </div>
                     </div>
