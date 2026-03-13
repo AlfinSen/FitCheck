@@ -42,10 +42,10 @@ const RecentTryOns = () => {
     }
 
     return (
-        <div className="min-h-screen bg-[#fbfbfd] pt-[48px] font-sans">
+        <div className="min-h-screen bg-[#fbfbfd] pt-[56px] font-sans">
             {/* Header */}
-            <div className="sticky top-[48px] z-40 bg-white/80 backdrop-blur-md border-b border-gray-200/50 px-4 py-4">
-                <div className="max-w-[1200px] mx-auto flex items-center justify-between">
+            <div className="sticky top-[56px] z-40 bg-white/80 backdrop-blur-md border-b border-gray-200/50 px-4 py-4">
+                <div className="max-w-[1024px] mx-auto flex items-center justify-between">
                     <h1 className="text-[21px] font-semibold text-[#1d1d1f]">Recent Try-Ons</h1>
                     <div className="flex items-center space-x-4">
                         <span className="text-[14px] text-gray-500">{recentTryOns.length} Results</span>
@@ -61,7 +61,7 @@ const RecentTryOns = () => {
                 </div>
             </div>
 
-            <div className="max-w-[1200px] mx-auto px-4 py-12">
+            <div className="max-w-[1024px] mx-auto px-4 py-12">
                 {recentTryOns.length > 0 ? (
                     <div className="space-y-8">
                         {recentTryOns.map((tryOn) => (

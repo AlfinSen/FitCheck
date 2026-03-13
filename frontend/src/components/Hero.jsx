@@ -125,16 +125,26 @@ const Hero = () => {
 
             {/* Feature Grid (Bento-lite) */}
             <div className="max-w-[1200px] mx-auto px-4 py-24 grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-white rounded-[30px] p-10 h-[500px] flex flex-col items-center justify-center text-center shadow-sm hover:scale-[1.01] transition-transform duration-500 border border-gray-100">
+                <div
+                    onClick={() => navigate('/tryon')}
+                    className="bg-white rounded-[30px] p-10 h-[500px] flex flex-col items-center justify-center text-center shadow-sm hover:scale-[1.01] transition-transform duration-500 border border-gray-100 cursor-pointer"
+                >
                     <h3 className="text-[40px] font-semibold mb-4 text-[#1d1d1f]">Virtual Try-On</h3>
                     <p className="text-[21px] text-gray-500 mb-8 max-w-md">See how it looks before you buy. Powered by advanced AI.</p>
                     <img src="/images/tryon.png" alt="Try On" className="h-64 object-contain rounded-xl shadow-sm" />
                 </div>
-                <div className="bg-black text-white rounded-[30px] p-10 h-[500px] flex flex-col items-center justify-center text-center shadow-sm hover:scale-[1.01] transition-transform duration-500 overflow-hidden relative">
+                <div
+                    onClick={() => navigate('/collections')}
+                    className="bg-black text-white rounded-[30px] p-10 h-[500px] flex flex-col items-center justify-center text-center shadow-sm hover:scale-[1.01] transition-transform duration-500 overflow-hidden relative cursor-pointer"
+                >
                     <div className="z-10 relative">
                         <h3 className="text-[40px] font-semibold mb-4">Smart Wardrobe</h3>
                         <p className="text-[21px] text-gray-400 mb-8">Organize your style.</p>
-                        <Button variant="outline" className="border-white text-white hover:bg-white hover:text-black rounded-full transition-colors">
+                        <Button
+                            variant="outline"
+                            onClick={(e) => { e.stopPropagation(); navigate('/collections') }}
+                            className="border-white text-white hover:bg-white hover:text-black rounded-full transition-colors"
+                        >
                             Explore
                         </Button>
                     </div>

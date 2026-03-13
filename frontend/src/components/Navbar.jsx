@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Search, ShoppingBag, Menu, X } from 'lucide-react'
+import { Menu, X } from 'lucide-react'
 import { gsap } from 'gsap'
 import { Link, useLocation } from 'react-router-dom'
 import { cn } from '../lib/utils'
@@ -39,9 +39,9 @@ const Navbar = () => {
 
     return (
         <>
-            <nav ref={navRef} className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200/50 transition-all duration-300 h-[48px] flex items-center justify-center">
-                <div className="max-w-[1024px] w-full px-4 flex items-center justify-between text-[12px] font-normal tracking-tight">
-                    <div className="flex items-center gap-4">
+            <nav ref={navRef} className="fixed top-0 left-0 right-0 z-50 bg-white/85 backdrop-blur-md border-b border-gray-200/50 transition-all duration-300 h-[56px] flex items-center justify-center">
+                <div className="max-w-[1200px] w-full px-5 grid grid-cols-[auto_1fr] md:grid-cols-[1fr_auto_1fr] items-center text-[12px] font-normal tracking-tight">
+                    <div className="flex items-center gap-4 justify-self-start">
                         {/* Mobile Menu Button */}
                         <button
                             className="md:hidden text-gray-900"
@@ -50,19 +50,21 @@ const Navbar = () => {
                             <Menu className="w-5 h-5" />
                         </button>
 
-                        <Link to="/" className="text-lg font-semibold tracking-tight text-gray-900 hover:opacity-80 transition-opacity">
+                        <Link to="/" className="text-[18px] font-semibold tracking-tight text-gray-900 hover:opacity-80 transition-opacity">
                             FitCheck
                         </Link>
                     </div>
 
-                    <div className="hidden md:flex items-center space-x-8">
+                    <div className="hidden md:flex items-center justify-center space-x-2 justify-self-center rounded-full bg-[#f3f4f6] p-1.5">
                         {appNavItems.map((item) => (
                             <Link
                                 key={item.name}
                                 to={item.path}
                                 className={cn(
-                                    "text-gray-600 hover:text-black transition-colors duration-300",
-                                    location.pathname === item.path && "text-black"
+                                    "rounded-full px-4 py-1.5 text-[13px] text-gray-600 hover:text-black transition-all duration-300",
+                                    location.pathname === item.path
+                                        ? "bg-white text-black shadow-sm"
+                                        : "hover:bg-white/70"
                                 )}
                             >
                                 {item.name}
@@ -70,11 +72,7 @@ const Navbar = () => {
                         ))}
                     </div>
 
-                    <div className="flex items-center space-x-6">
-                        <button className="text-gray-600 hover:text-black transition-colors">
-                            <Search className="w-4 h-4" />
-                        </button>
-                    </div>
+                    <div className="hidden md:block justify-self-end w-[88px]" />
                 </div>
             </nav>
 
